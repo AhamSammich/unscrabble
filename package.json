@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "jest": "^28.1.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "mock-argv": "^2.0.8",
+    "prompt-sync": "^4.2.0"
+  }
+}
