@@ -16,7 +16,6 @@ class InputHandler {
         return args;
     }
 
-    // Validate input
     validateInput = (inp=this.inputVal) => {
         let firstArgRegex = /.*[^A-Za-z].*/;
         if (firstArgRegex.test(inp[0])) return false;
@@ -29,15 +28,11 @@ class InputHandler {
         return true;
     }
     
-    // Clean up invalid input
     get validated() {
         let inputIsValid = this.validateInput();
-        // console.log(`Input passed: ${this.inputVal}`);
         if (inputIsValid) return this.inputVal;
         return null;
     }
-
-
 }
 
 class Dictionary {
@@ -69,7 +64,6 @@ class Dictionary {
     static createList = async (fileName) => {
         let file = await this.#getFile(fileName);
         let dictionary = file?.split('\r\n');
-        // console.log(dictionary)
         this.#dictFile = dictionary;
     }
     
@@ -186,15 +180,16 @@ const main = async (input) => {
 
     let words = new Solver();
     let anagrams = words.getSolution(inp.validated);
-    // console.log(anagrams);
     if (inp.flag == '--def') {
         try {
             let results = await Promise.all(
                 anagrams.map(word => Dictionary.getDefinition(word))
             );
             for (let result of results) {
-                if (!result.def?.[0]) result.def = ['DEFINITION NOT RETRIEVED'];
-                // console.log(`${result.word}:\n\t${result.def?.join('\n\t')}`);
+                if (!result.def?.[0]) {
+                    result.def = ['DEFINITION NOT RETRIEVED'];
+                    continue;
+                }
                 createHtml(result);
             }
         } catch (error) {
@@ -206,8 +201,6 @@ const main = async (input) => {
 const clearHtml = () => {
     document.querySelector('main').innerHTML = "";
     document.querySelector('header').innerHTML = "";
-    // document.getElementById('max').max = '7';
-    // document.getElementById('min').max = '7';
 }
 
 const getTiles = (letters) => {
@@ -280,4 +273,3 @@ htmlForm.addEventListener('submit', e => {
 })
 
 createHeader('unscrabble');
-
