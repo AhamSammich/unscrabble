@@ -137,7 +137,7 @@ const main = async (input) => {
     let anagrams = words.getSolution(inp.validated, false);
     try {
         let results = await Promise.all(
-            anagrams.map(word => dict.define(word))
+            anagrams.map(word => dictionary.define(word))
         );
         results = results.filter(result => result.def?.length > 0);
         return results;
@@ -146,4 +146,4 @@ const main = async (input) => {
     }
 }
 
-module.exports = { InputHandler, Dictionary, Solver, main };
+module.exports = { InputHandler, Solver, main };
