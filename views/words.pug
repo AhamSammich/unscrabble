@@ -4,7 +4,7 @@ block title
     title Unscrabble | #{letters}
 
 block nav
-    img.float-left(src="./images/GitHub-Mark-64px.png" alt="GitHub"
+    img.float-left(src="./images/logos/GitHub-Mark-64px.png" alt="GitHub"
             target="_blank" style="height: 30px; width: 30px;")
     a.float-right(href="/" target="_self") Try again?
 
@@ -12,7 +12,7 @@ block header
     section.tile-set.flex-row
         each char in letters 
             .tile(
-                style=`background-image: url('../images/resized-tile-pngs/${
+                style=`background-image: url('./images/tiles/${
                     char.toLowerCase()}.png'); background-size: cover;`
             )
     

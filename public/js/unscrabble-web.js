@@ -1,13 +1,12 @@
+const fs = require('fs');
+const https = require('https');
+const http = require('http');
+const path = require('path');
+
 class InputHandler {
     constructor(inputArr) {
         this.flag = null;
-        this.inputVal = inputArr ? this.parseArr(inputArr) : this.parseCLI();
-    }
-
-    parseArr = (inputArr) => {
-        let args = inputArr;
-        this.flag = args[0].startsWith('-') ? args.splice(0,1)[0] : null;
-        return args;
+        this.inputVal = inputArr ?? this.parseCLI();
     }
 
     parseCLI = () => {
@@ -16,6 +15,7 @@ class InputHandler {
         return args;
     }
 
+    // Validate input
     validateInput = (inp=this.inputVal) => {
         let firstArgRegex = /.*[^A-Za-z].*/;
         if (firstArgRegex.test(inp[0])) return false;
@@ -28,11 +28,15 @@ class InputHandler {
         return true;
     }
     
+    // Clean up invalid input
     get validated() {
         let inputIsValid = this.validateInput();
+        // console.dir(this.inputVal);
         if (inputIsValid) return this.inputVal;
         return null;
     }
+
+
 }
 
 class Dictionary {
@@ -56,8 +60,8 @@ class Dictionary {
 
     static #getFile = (fileName) => {
         return new Promise(resolve => {
-            fetch(fileName)
-            .then(response => resolve(response.text()));
+            let file = fs.readFileSync((fileName || this.#dictFile), 'utf8');
+            resolve(file);
         });
     }
 
@@ -65,11 +69,11 @@ class Dictionary {
         let file = await this.#getFile(fileName);
         let dictionary = file?.split('\r\n');
         this.#dictFile = dictionary;
-    }
-    
+        console.dir(dictionary);
+    }    
 
     get wordList() {
-        return this.words.filter(word => word.length >= this.minLen);
+        return this.words.filter(word => word.length >= this.minLen)
     }
     
     get length() {return this.wordList.length}
@@ -77,15 +81,44 @@ class Dictionary {
     getRandomWord = () => this.wordList[Math.floor(Math.random()*this.length)]?.toUpperCase();
 
     static getDefinition = (word) => {
-        return new Promise(resolve => {
-            fetch(`${this.#apiUrl}${word}?key=${this.#apiKey}`)
-            .then(response => response.json())
-            .then(data => {
-                let defObj = { word, pos: data[0].fl, def: data[0].shortdef };
-                resolve(defObj);
-            });
-        });
-     }
+        return new Promise((resolve, reject) => {
+            try {
+                const request = https.get(
+                    `${Dictionary.#apiUrl}${word}?key=${Dictionary.#apiKey}`,
+                response => {
+                    if (response.statusCode != 200) {
+                        const message = `There was an error getting the definition for ${word} (${
+                            response.statusCode}: ${http.STATUS_CODES[response.statusCode]})`;
+                        const statusCodeError = new Error(message);
+                        throw statusCodeError;
+                    }
+                    
+                    let body = "";
+                    response.setEncoding('utf8');
+                    response.on('data', (data) => {
+                        body += data;
+                    });
+                    response.on('end', () => {
+                        try {
+                            let defArray = JSON.parse(body);
+                            let defObj = { word, pos: defArray[0].fl, def: defArray[0].shortdef };
+                            resolve(defObj);
+                        } catch (error) {
+                            let err = new Error(`There was an error getting the definition for ${
+                                word} (${error.message})`);
+                            reject(err);
+                        }
+                    });
+                });
+                request.on('error', error => console.error(error.code));
+            } catch (error) {
+                let err = new Error(`There was an error getting the definition for ${
+                    word} (${error.message})`);
+                reject(err);
+            }
+            
+        })
+    }
 }
 
 
@@ -94,7 +127,6 @@ class Solver {
         this.dict = new Dictionary(dictSrc, min);
         this.maxLen = null;
         this.minLen = min;
-        this.matchLen = false;
     }
 
     static #setIsValid = (letterSet, wordSet) => {
@@ -131,7 +163,7 @@ class Solver {
     }
 
 
-    getSolution = (inputArr) => {
+    getSolution = (inputArr, matchLen=true) => {
         if (inputArr == null) return;
 
         let [letters, max, min] = [...inputArr];
@@ -143,13 +175,13 @@ class Solver {
             return;
         }
         
-        let dict = this.filterDict(letters.length);
+        let dict = this.filterDict(letters.length, matchLen);
         return this.getAnagrams(letters, dict);
     }
 
-    filterDict = (inputLen) => {
+    filterDict = (inputLen, matchLen) => {
         let dict = this.dict.wordList;
-        if (this.matchLen) {
+        if (matchLen) {
             return dict.filter(word => word.length == inputLen);
         }
         let withinMax = word => this.maxLen ? word.length <= this.maxLen : true;
@@ -174,102 +206,27 @@ class Solver {
 }
 
 const main = async (input) => {
-    await Dictionary.createList('./files/dictionary.txt');
+    await Dictionary.createList(
+        path.resolve(__dirname, '..', 'files', 'dictionary.txt')
+    );
     let inp = new InputHandler(input);
     if (inp == null) return;
 
     let words = new Solver();
-    let anagrams = words.getSolution(inp.validated);
-    if (inp.flag == '--def') {
-        try {
-            let results = await Promise.all(
-                anagrams.map(word => Dictionary.getDefinition(word))
-            );
-            for (let result of results) {
-                if (!result.def?.[0]) {
-                    result.def = ['DEFINITION NOT RETRIEVED'];
-                    continue;
-                }
-                createHtml(result);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-}
-
-const clearHtml = () => {
-    document.querySelector('main').innerHTML = "";
-    document.querySelector('header').innerHTML = "";
-}
-
-const getTiles = (letters) => {
-    let tiles = [];
-    for (let char of letters) {
-        let tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.style = (
-            `height: 4.5rem; width: 3rem; background-image: url(
-                '../images/resized-tile-pngs/${
-            char.toLowerCase()}.png'); background-size: cover;`
+    let anagrams = words.getSolution(inp.validated, false);
+    // console.log(`anagrams=${anagrams}`);
+    try {
+        let results = await Promise.all(
+            anagrams.map(word => Dictionary.getDefinition(word))
         );
-        tiles.push(tile);
+        results = results.filter(result => result.def?.length > 0);
+        // console.log(`results=${results}`);
+        return results;
+    } catch (error) {
+        console.error(error);
     }
-    return tiles;
 }
 
-const createHeader = (letters="") => {
-    let hdr = document.querySelector('header');
-    let tiles = getTiles(letters);
-    hdr.append(...tiles);
-}
+if (process.argv[2]) main();
 
-const createHtml = (defObj) => {
-    let h = document.createElement('h2');
-    h.textContent = defObj.word;
-
-    let p = document.createElement('p');
-    p.style = 'font-style: italic;'
-    p.textContent = defObj.pos;
-
-    let ul = document.createElement('ul');
-    ul.className = 'flex-col';
-    defObj.def?.forEach(def => {
-        let li = document.createElement('li');
-        li.textContent = def;
-        ul.append(li);
-    })
-    
-    let wordDiv = document.createElement('div');
-    wordDiv.className = 'flex-col flex-center';
-    wordDiv.append(...[h, p, ul]);
-
-    let mainElem = document.querySelector('main');
-    mainElem.append(wordDiv);
-}
-
-const parseData = form => {
-    let data = new FormData(form);
-    
-    data['letters'] = form.querySelector('#letters').value;
-    let minMax = [form.querySelector('#min'), form.querySelector('#max')];
-    let length = data.letters.length;
-    
-    if (minMax[0].value > length) minMax[0].value = length;
-    data['max'] = minMax[1].value;
-    data['min'] = minMax[0].value;
-
-    return data;
-}
-
-
-const htmlForm = document.querySelector('form');
-htmlForm.addEventListener('submit', e => {
-    e.preventDefault();
-    let formData = parseData(htmlForm);
-    clearHtml();
-    createHeader(formData.letters);
-    main(['--def', ...Array.from(formData.values())]);
-})
-
-createHeader('unscrabble');
+module.exports = { InputHandler, Dictionary, Solver, main };

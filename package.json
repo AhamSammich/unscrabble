@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "node js/app.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "^4.18.1",
@@ -17,7 +17,7 @@
   "name": "unscrabble",
   "description": "Need some help with your word puzzles?  This app provides anagrams from user-input and retrieves their definitions.",
   "version": "1.0.0",
-  "main": "js/app.js",
+  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AhamSammich/unscrabble.git"
