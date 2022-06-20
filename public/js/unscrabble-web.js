@@ -67,9 +67,9 @@ class Dictionary {
 
     static createList = async (fileName) => {
         let file = await this.#getFile(fileName);
-        let dictionary = file?.split('\r\n');
+        file = file.replace(/\r/g, "");
+        let dictionary = file?.split('\n');
         this.#dictFile = dictionary;
-        console.dir(dictionary);
     }    
 
     get wordList() {
