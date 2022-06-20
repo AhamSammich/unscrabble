@@ -1,0 +1,14 @@
+doctype html 
+html(lang="en")
+    head
+        block title
+        link(rel="stylesheet" href="./css/style.css")
+
+    body 
+        nav
+            block nav 
+        header.flex-col.flex-center
+            block header 
+        block main 
+        footer.flex-row.flex-even
+            include includes/foot.pug

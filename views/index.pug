@@ -1,27 +1,33 @@
-doctype html
-html(lang="en")
-head 
-    link(rel="stylesheet" href="./css/style.css")
-    script(type="module" src="./files/unscrabble-browser.js" defer)
-body 
-    form.flex-row.flex-center(action="#" method="POST")
-        label(for="letters") Letters: 
-        input#letters(type="text" name="letters" placeholder="Enter letters here!")
-        button(type="submit") Unscrabble it! 
-        label(for="max") Max: 
-        input#max(type="number" name="max" value="7" max="7" min="3") 
-        label(for="min") Min: 
-        input#min(type="number" name="min" value="3" max="7" min="3") 
+extends layout.pug 
 
-    header.flex-row.flex-center 
-    main 
-    footer.flex-row.flex-center
-        div.flex-row.flex-center
-            p This app uses Merriam-Webster's Collegiate&#174 Dictionary with Audio
-            a(href="https://www.merriam-webster.com/" target="_blank")
-                img(src="./images/MWLogo.png" style="height: 50px; width: 50px;")
-        div.flex-row.flex-center
-            p Tile images by
-            a(href="https://www.obsidiandawn.com" target="_blank")
-                img(src="./images/resized-tile-pngs/credit.jpg", alt="Images by ObsidianDawn",
-                style="position: relative; float: right; height: 50px; width: 120px;")
+block title 
+    title Unscrabble | Anagram Generator
+
+block nav
+    a.float-left(href="https://github.com/AhamSammich/unscrabble" target="_blank") 
+        .flex-row.flex-center
+            img(src="./images/GitHub-Mark-64px.png" alt="GitHub"
+            style="height: 30px; width: 30px;")
+            p View project on GitHub.com/AhamSammich
+
+block header
+    .tile-set.flex-row(style="padding-top: 10%;")
+        each char in "unscrabble"
+            .tile(
+                style=`background-image: url('../images/resized-tile-pngs/${
+                    char.toLowerCase()}.png'); background-size: cover;`
+            )
+    h2(style="letter-spacing: 2px;") Anagram Generator
+
+block main
+    main.flex-col.flex-center
+        form.flex-center(action="/search" method="POST")
+            .flex-row.flex-center
+                label(for="letters") Letters: 
+                input#letters(type="text" name="letters" placeholder="Enter letters here!")
+                button(type="submit") Unscrabble it! 
+            .flex-row.flex-center
+                label(for="max") Max: 
+                input#max(type="number" name="max" value="7" max="7" min="3") 
+                label(for="min") Min: 
+                input#min(type="number" name="min" value="3" max="7" min="3") 

@@ -1,0 +1,27 @@
+extends layout.pug
+
+block title 
+    title Unscrabble | #{letters}
+
+block nav
+    img.float-left(src="./images/GitHub-Mark-64px.png" alt="GitHub"
+            target="_blank" style="height: 30px; width: 30px;")
+    a.float-right(href="/" target="_self") Try again?
+
+block header
+    section.tile-set.flex-row
+        each char in letters 
+            .tile(
+                style=`background-image: url('../images/resized-tile-pngs/${
+                    char.toLowerCase()}.png'); background-size: cover;`
+            )
+    
+block main
+    main
+        each obj in results 
+            .flex-col.flex-center(style="justify-content: flex-start")
+                h2= obj.word 
+                p(style="font-style: italic;")= obj.pos 
+                ul.flex-col 
+                    each entry in obj.def 
+                        li= entry
