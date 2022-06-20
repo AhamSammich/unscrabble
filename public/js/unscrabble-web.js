@@ -1,21 +1,11 @@
-const fs = require('fs');
-const https = require('https');
-const http = require('http');
-const path = require('path');
+const dictionary = require('./dictionary');
 
 class InputHandler {
     constructor(inputArr) {
         this.flag = null;
-        this.inputVal = inputArr ?? this.parseCLI();
+        this.inputVal = inputArr;
     }
 
-    parseCLI = () => {
-        let args = process.argv.slice(2);
-        this.flag = args[0].startsWith('-') ? args.splice(0,1)[0] : null;
-        return args;
-    }
-
-    // Validate input
     validateInput = (inp=this.inputVal) => {
         let firstArgRegex = /.*[^A-Za-z].*/;
         if (firstArgRegex.test(inp[0])) return false;
@@ -28,26 +18,15 @@ class InputHandler {
         return true;
     }
     
-    // Clean up invalid input
     get validated() {
         let inputIsValid = this.validateInput();
-        // console.dir(this.inputVal);
         if (inputIsValid) return this.inputVal;
         return null;
     }
-
-
 }
 
 class Dictionary {
-    static #dictFile;
-    // School Dictionary API
-    // static #apiUrl = 'https://www.dictionaryapi.com/api/v3/references/sd4/json/'
-    // static #apiKey = '4d9687f8-d7f5-46cb-aba3-95806f893300'
-    
-    // Collegiate Dictionary API
-    static #apiUrl = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/'
-    static #apiKey = 'e1b58875-396f-4962-9666-1dc93ca771f8'
+    static #dictFile = dictionary.get();
 
     constructor(dictSrc, minWordLength=3) {
         if (dictSrc) {
@@ -58,67 +37,11 @@ class Dictionary {
         this.minLen = minWordLength;
     }
 
-    static #getFile = (fileName) => {
-        return new Promise(resolve => {
-            let file = fs.readFileSync((fileName || this.#dictFile), 'utf8');
-            resolve(file);
-        });
-    }
+    static setList = async () => this.#dictFile = await dictionary.get();
 
-    static createList = async (fileName) => {
-        let file = await this.#getFile(fileName);
-        file = file.replace(/\r/g, "");
-        let dictionary = file?.split('\n');
-        this.#dictFile = dictionary;
-    }    
-
-    get wordList() {
-        return this.words.filter(word => word.length >= this.minLen)
-    }
+    get wordList() {return this.words.filter(word => word.length >= this.minLen)}
     
     get length() {return this.wordList.length}
-
-    getRandomWord = () => this.wordList[Math.floor(Math.random()*this.length)]?.toUpperCase();
-
-    static getDefinition = (word) => {
-        return new Promise((resolve, reject) => {
-            try {
-                const request = https.get(
-                    `${Dictionary.#apiUrl}${word}?key=${Dictionary.#apiKey}`,
-                response => {
-                    if (response.statusCode != 200) {
-                        const message = `There was an error getting the definition for ${word} (${
-                            response.statusCode}: ${http.STATUS_CODES[response.statusCode]})`;
-                        const statusCodeError = new Error(message);
-                        throw statusCodeError;
-                    }
-                    
-                    let body = "";
-                    response.setEncoding('utf8');
-                    response.on('data', (data) => {
-                        body += data;
-                    });
-                    response.on('end', () => {
-                        try {
-                            let defArray = JSON.parse(body);
-                            let defObj = { word, pos: defArray[0].fl, def: defArray[0].shortdef };
-                            resolve(defObj);
-                        } catch (error) {
-                            let err = new Error(`There was an error getting the definition for ${
-                                word} (${error.message})`);
-                            reject(err);
-                        }
-                    });
-                });
-                request.on('error', error => console.error(error.code));
-            } catch (error) {
-                let err = new Error(`There was an error getting the definition for ${
-                    word} (${error.message})`);
-                reject(err);
-            }
-            
-        })
-    }
 }
 
 
@@ -206,27 +129,21 @@ class Solver {
 }
 
 const main = async (input) => {
-    await Dictionary.createList(
-        path.resolve(__dirname, '..', 'files', 'dictionary.txt')
-    );
+    await Dictionary.setList();
     let inp = new InputHandler(input);
     if (inp == null) return;
 
     let words = new Solver();
     let anagrams = words.getSolution(inp.validated, false);
-    // console.log(`anagrams=${anagrams}`);
     try {
         let results = await Promise.all(
-            anagrams.map(word => Dictionary.getDefinition(word))
+            anagrams.map(word => dict.define(word))
         );
         results = results.filter(result => result.def?.length > 0);
-        // console.log(`results=${results}`);
         return results;
     } catch (error) {
         console.error(error);
     }
 }
-
-if (process.argv[2]) main();
 
 module.exports = { InputHandler, Dictionary, Solver, main };

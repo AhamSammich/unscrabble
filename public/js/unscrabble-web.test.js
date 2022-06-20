@@ -29,17 +29,6 @@ describe('InputHandler', () => {
     });
 });
 
-describe('Dictionary', () => {
-    test('builds an array of strings', () => {
-        let testObj = new uut.Solver();
-        let dict = testObj.dict;
-        expect(dict.wordList instanceof Array).toBe(true);
-        expect(dict.wordList.length).toBeTruthy();
-        expect(typeof dict.getRandomWord()).toBe('string');
-    });
-
-})
-
 describe('Solver', () => {
     test('filters for max and min lengths', () => {
         let testObj = new uut.Solver(3, testDict);
