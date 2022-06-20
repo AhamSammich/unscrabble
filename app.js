@@ -15,10 +15,10 @@ app.get('/', (req, res) => {
     res.end();
 });
 
-app.post('/search', async (req, res) => {
+app.post('/results', async (req, res) => {
     let results = await script.main([...Object.values(req.body)]);
     req.body['results'] = results;
-    res.render('words', req.body);
+    res.render('results', req.body);
     res.end();
 })
 

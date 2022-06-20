@@ -1,12 +1,17 @@
 extends layout.pug
 
 block title 
-    title Unscrabble | #{letters}
+    title Unscrabble | Anagrams for "#{letters}"
 
 block nav
-    img.float-left(src="./images/logos/GitHub-Mark-64px.png" alt="GitHub"
-            target="_blank" style="height: 30px; width: 30px;")
-    a.float-right(href="/" target="_self") Try again?
+    a(href="https://github.com/AhamSammich/unscrabble") 
+    img.float-left(
+        src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
+        target="_blank" style="height: 30px; width: 30px;"
+        )
+    a.float-right(
+        href="/" target="_self"
+        ) #{results.length} results found. Try again?
 
 block header
     section.tile-set.flex-row
