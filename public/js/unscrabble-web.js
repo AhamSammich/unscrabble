@@ -2,7 +2,6 @@ const dictionary = require('./dictionary');
 
 class InputHandler {
     constructor(inputArr) {
-        this.flag = null;
         this.inputVal = inputArr;
     }
 
@@ -21,7 +20,7 @@ class InputHandler {
     get validated() {
         let inputIsValid = this.validateInput();
         if (inputIsValid) return this.inputVal;
-        return null;
+        return new TypeError('Invalid input received.', 400);
     }
 }
 
@@ -131,7 +130,7 @@ class Solver {
 const main = async (input) => {
     await Dictionary.setList();
     let inp = new InputHandler(input);
-    if (inp == null) return;
+    if (inp == null) return new Error('No input received.', 400);
 
     let words = new Solver();
     let anagrams = words.getSolution(inp.validated, false);
@@ -143,7 +142,7 @@ const main = async (input) => {
         return results;
     } catch (error) {
         console.error(error);
-        return error;
+        return new Error(error.message, 500);
     }
 }
 
