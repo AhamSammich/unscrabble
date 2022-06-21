@@ -1,0 +1,23 @@
+extends layout.pug
+
+block title 
+    title #{statusCode || "404"} | Page Not Found
+
+block nav 
+    p.float-right No results found.
+
+block header
+    .tile-set.flex-row
+        each char in "sorry"
+            .tile(
+                style=`background-image: url('./images/tiles/${
+                    char.toLowerCase()}.png'); background-size: cover;`
+            )
+    
+    h2 #{message ? "An error has occurred." : "This page does not exist."}
+
+block main 
+    main.flex-col.flex-center
+        p #{message}
+        a(href="/" target="_self" style="font-weight: bold;") BACK
+    

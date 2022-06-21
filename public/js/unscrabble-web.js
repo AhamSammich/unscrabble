@@ -143,6 +143,7 @@ const main = async (input) => {
         return results;
     } catch (error) {
         console.error(error);
+        return error;
     }
 }
 

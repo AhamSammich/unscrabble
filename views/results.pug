@@ -4,17 +4,20 @@ block title
     title Unscrabble | Anagrams for "#{letters}"
 
 block nav
-    a(href="https://github.com/AhamSammich/unscrabble") 
-    img.float-left(
-        src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
-        target="_blank" style="height: 30px; width: 30px;"
-        )
+    a.float-left(
+        href="https://github.com/AhamSammich/unscrabble"
+        target="_blank"
+        ) 
+        img(
+            src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
+            target="_blank" style="height: 30px; width: 30px;"
+            )
     a.float-right(
         href="/" target="_self"
         ) #{results.length} results found. Try again?
 
 block header
-    section.tile-set.flex-row
+    .tile-set.flex-row
         each char in letters 
             .tile(
                 style=`background-image: url('./images/tiles/${
