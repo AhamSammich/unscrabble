@@ -137,3 +137,33 @@ ul {
     position: relative;
     float: right;
 }
+
+[data-class='label'] {
+    font-style: italic;
+    font-size: smaller;
+}
+
+[data-class='word'] {
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+[data-hidden] {
+    opacity: 0;
+    height: 0;
+}
+
+.fade-in {
+    animation: fade-in 1.5s;
+    opacity: 1;
+    height: fit-content;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

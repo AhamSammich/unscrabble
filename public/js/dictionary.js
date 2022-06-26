@@ -50,7 +50,7 @@ const getDefinition = (word) => {
                 response.on('end', () => {
                     try {
                         let defArray = JSON.parse(body);
-                        let defObj = { word, pos: defArray[0].fl, def: defArray[0].shortdef };
+                        let defObj = { word, label: defArray[0].fl, def: defArray[0].shortdef };
                         resolve(defObj);
                     } catch (error) {
                         let err = new Error(`There was an error getting the definition for ${

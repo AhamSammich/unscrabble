@@ -3,5 +3,5 @@ node_modules
 .vscode
 tests
 index.html
-js
-public/js/unscrabble-browser.js
+/js
+/public/js/unscrabble-browser.js

@@ -25,11 +25,17 @@ block header
             )
     
 block main
-    main
-        each obj in results 
-            .flex-col.flex-center(style="justify-content: flex-start")
-                h2= obj.word 
-                p(style="font-style: italic;")= obj.pos 
-                ul.flex-col 
-                    each entry in obj.def 
-                        li= entry
+    main(data-array=results.join())
+        each word in results 
+            .flex-col.flex-center(id=word, style="justify-content: flex-start")
+                h2(data-class='word')= word 
+        //- each obj in results 
+        //-     .flex-col.flex-center(style="justify-content: flex-start")
+        //-         h2= obj.word 
+                //- p(style="font-style: italic;")= obj.label 
+                //- ul.flex-col 
+                //-     each entry in obj.def 
+                //-         li= entry
+
+block script 
+    script(src="./js/api.js", defer)

@@ -3,6 +3,7 @@ html(lang="en")
     head
         block title
         link(rel="stylesheet" href="./css/style.css")
+        block script
 
     body 
         nav
@@ -11,4 +12,7 @@ html(lang="en")
             block header 
         block main 
         footer.flex-row.flex-even
+            block footer
             include includes/foot.pug
+
+    //- block script

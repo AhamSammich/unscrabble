@@ -134,16 +134,17 @@ const main = async (input) => {
 
     let words = new Solver();
     let anagrams = words.getSolution(inp.validated, false);
-    try {
-        let results = await Promise.all(
-            anagrams.map(word => dictionary.define(word))
-        );
-        results = results.filter(result => result.def?.length > 0);
-        return results;
-    } catch (error) {
-        console.error(error);
-        return new Error(error.message, 500);
-    }
+    return anagrams
+    // try {
+    //     let results = await Promise.all(
+    //         anagrams.map(word => dictionary.define(word))
+    //     );
+    //     results = results.filter(result => result.def?.length > 0);
+    //     return results;
+    // } catch (error) {
+    //     console.error(error);
+    //     return new Error(error.message, 500);
+    // }
 }
 
 module.exports = { InputHandler, Solver, main };
