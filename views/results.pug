@@ -3,18 +3,25 @@ extends layout.pug
 block title 
     title Unscrabble | Anagrams for "#{letters}"
 
+block script 
+    script(src="./js/define.js" defer)
+
 block nav
-    a.float-left(
-        href="https://github.com/AhamSammich/unscrabble"
-        target="_blank"
-        ) 
-        img(
-            src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
-            target="_blank" style="height: 30px; width: 30px;"
-            )
-    a.float-right(
-        href="/" target="_self"
-        ) #{results.length} results found. Try again?
+    .flex-row.flex-even(style="width: 100%; margin: 0; justify-content: space-between")
+        a(href="/" target="_self")
+            img(
+                src="./images/logos/back-64px.png" alt="go back" 
+                target="_self" style="height: 35px; width: 35px;"
+                )
+        .flex-col.flex-center(style="margin: 0;")
+            h3 #{results.length} results found.
+            if results.length
+                p(style="font-weight: normal; font-style: italic;") Click a word to see definition.
+        a(href="https://github.com/AhamSammich/unscrabble" target="_blank") 
+            img(
+                src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
+                target="_blank" style="height: 35px; width: 35px;"
+                )
 
 block header
     .tile-set.flex-row
@@ -27,15 +34,5 @@ block header
 block main
     main(data-array=results.join())
         each word in results 
-            .flex-col.flex-center(id=word, style="justify-content: flex-start")
-                h2(data-class='word')= word 
-        //- each obj in results 
-        //-     .flex-col.flex-center(style="justify-content: flex-start")
-        //-         h2= obj.word 
-                //- p(style="font-style: italic;")= obj.label 
-                //- ul.flex-col 
-                //-     each entry in obj.def 
-                //-         li= entry
-
-block script 
-    script(src="./js/define.js", defer)
+            .flex-col.flex-center(id=word style="justify-content: flex-start;")
+                h2(data-class='word')= word

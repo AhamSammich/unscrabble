@@ -3,6 +3,12 @@ const getWords = () => {
     return main.dataset.array?.split(',');
 }
 
+const getLoader = () => {
+    let loadElem = document.createElement('div');
+    loadElem.classList.add('loader');
+    return loadElem;
+}
+
 const getDefinition = word => {
     const dictUrl = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
     const dictKey = 'e1b58875-396f-4962-9666-1dc93ca771f8';
@@ -73,17 +79,26 @@ const createHtml = defObj => {
     return elements;
 }
 
+const loadEntry = async elem => {
+    let loader = getLoader();
+    let word = elem.querySelector('[data-class="word"]');
+    word.setAttribute('data-class', 'loading');
+    elem.append(loader);
+
+    let result = await getDefinition(elem.id);
+    let entryHtml = createHtml(result);
+
+    loader.remove();
+    showHtml(entryHtml);
+    word.setAttribute('data-class', 'defined');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const wordArr = getWords();
     wordArr.forEach(word => {
         let elem = document.getElementById(word);
         elem.addEventListener('click', async e => {
-            let result = await getDefinition(word);
-            let entry = createHtml(result);
-            showHtml(entry);
-            elem.querySelector(
-                '[data-class="word"]'
-                ).setAttribute('data-class', 'defined');
+            loadEntry(elem);
         }, {once: true});
     });
 });

@@ -1,6 +1,5 @@
 * {
     box-sizing: border-box;
-    /* font-size: 62.5%; */
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     padding: 0;
@@ -22,7 +21,7 @@ nav {
     padding: .5rem;
     margin-bottom: 2rem;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: .5px;
 }
 
 input,
@@ -35,6 +34,10 @@ button {
 
 header {
     margin-bottom: 2rem;
+}
+
+.tile-set {
+    padding: 10px;
 }
 
 .tile {
@@ -103,6 +106,10 @@ div {
     margin: .25rem;
 }
 
+h2 {
+    letter-spacing: 1px;
+}
+
 ul {
     align-self: flex-start;
 }
@@ -129,11 +136,13 @@ ul {
 }
 
 .float-left {
+    display: inline;
     position: relative;
     float: left;
 }
 
 .float-right {
+    display: inline;
     position: relative;
     float: right;
 }
@@ -145,7 +154,14 @@ ul {
 
 [data-class='word'] {
     cursor: pointer;
-    letter-spacing: 1px;
+}
+
+[data-class='loading'] {
+    cursor: wait;
+}
+
+[data-class='defined'] {
+    cursor: default;
 }
 
 [data-hidden] {

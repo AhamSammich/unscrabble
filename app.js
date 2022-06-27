@@ -1,6 +1,5 @@
 const script = require('./public/js/unscrabble-web')
 const express = require('express');
-const { response } = require('express');
 const port = process.env.PORT || 8080;
 
 const app = express();
