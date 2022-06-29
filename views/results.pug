@@ -15,8 +15,7 @@ block nav
                 )
         .flex-col.flex-center(style="margin: 0;")
             h3 #{results.length} results found.
-            if results.length
-                p(style="font-weight: normal; font-style: italic;") Click a word to see definition.
+            p(style="font-weight: normal; font-style: italic;") Click a word to see definition.
         a(href="https://github.com/AhamSammich/unscrabble" target="_blank") 
             img(
                 src="./images/logos/GitHub-Mark-64px.png" alt="GitHub" 
@@ -30,9 +29,14 @@ block header
                 style=`background-image: url('./images/tiles/${
                     char.toLowerCase()}.png'); background-size: cover;`
             )
+    if results.length
+        p(
+            id="define-all" 
+            style="text-decoration: underline; font-style: italic; cursor: pointer;"
+            ) Click here to define all words.
     
 block main
     main(data-array=results.join())
         each word in results 
             .flex-col.flex-center(id=word style="justify-content: flex-start;")
-                h2(data-class='word')= word
+                h2(data-id=word data-class='word')= word

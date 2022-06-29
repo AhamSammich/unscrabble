@@ -3,6 +3,11 @@ const getWords = () => {
     return main.dataset.array?.split(',');
 }
 
+const getEmpty = () => {
+    let emptyElems = [...document.querySelectorAll('[data-class="word"]')];
+    return emptyElems.map(elem => elem.parentElement);
+}
+
 const getLoader = () => {
     let loadElem = document.createElement('div');
     loadElem.classList.add('loader');
@@ -27,22 +32,17 @@ const getDefinition = word => {
 }
 
 const defineAll = async () => {
-    const wordArr = getWords();
+    const empty = getEmpty();
     try {
-        let results = await Promise.all(
-            wordArr.map(word => getDefinition(word))
+        await Promise.all(
+            empty.map(loadEntry)
         );
-        results = results.filter(result => result.def?.length > 0);
-        results.forEach(createHtml());
-        // return results;
     } catch (error) {
         console.error(error);
-        // return new Error(error.message, 500);
     }
 }
 
 const showHtml = elements => {
-    elements[0]?.scrollIntoView({ behavior: "smooth", block: "center" });
     elements?.forEach(elem => {
         elem.removeAttribute('data-hidden');
         elem.classList.add('fade-in');
@@ -50,20 +50,18 @@ const showHtml = elements => {
 }
 
 const hideHtml = elements => {
-    elements.forEach(elem => {
+    elements?.forEach(elem => {
         elem.setAttribute('data-hidden', "");
     });
 }
 
 const createHtml = defObj => {
-    defObj = defObj || { 'label': 'No definition retrieved' }
     let p = document.createElement('p');
-    p.textContent = defObj.label;
+    p.textContent = defObj.label || 'Definition not found.';
     p.setAttribute('data-class', 'label');
     
     let ul = document.createElement('ul');
     ul.className = 'flex-col';
-    // hideDefinition(ul);
     defObj.def?.forEach(def => {
         let li = document.createElement('li');
         li.textContent = def;
@@ -74,7 +72,7 @@ const createHtml = defObj => {
     hideHtml(elements);
 
     let entry = document.getElementById(defObj.word)
-    entry.append(...elements);
+    entry?.append(...elements);
 
     return elements;
 }
@@ -97,8 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordArr = getWords();
     wordArr.forEach(word => {
         let elem = document.getElementById(word);
-        elem.addEventListener('click', async e => {
+        elem?.addEventListener('pointerup', async e => {
+            if (e.target.dataset.class === 'defined') return;
+            elem.scrollIntoView({ behavior: "smooth", block: "center" });
             loadEntry(elem);
         }, {once: true});
+    });
+
+    const defineBtn = document.getElementById('define-all');
+    defineBtn.addEventListener('pointerup', async e => {
+        let main = defineBtn.parentElement;
+        let loader = getLoader();
+        defineBtn.remove();
+        main.append(loader);
+        // hideHtml([defineBtn]);
+        await defineAll();
+        loader.remove();
     });
 });
