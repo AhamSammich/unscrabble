@@ -25,15 +25,15 @@ block main
             .flex-col.flex-center(style="gap: .5rem;")
                 label(for="letters") Letters ( A - Z )
                 input#letters(
-                    type="text" name="letters" maxlength="10" minlength="3" pattern="[A-Za-z]{3,10}"
-                    placeholder="Enter 3 to 10 letters here!" required
+                    type="text" name="letters" maxlength="20" minlength="3" pattern="[A-Za-z]{3,20}"
+                    placeholder="Enter letters here!" required
                     )
                 button(id="submit-btn" type="submit") Unscrabble it! 
             .flex-col.flex-center
-                p Search Length ( 3 - 10 )
+                p Search Length ( 3 - 20 )
                 .flex-row.flex-center
                     label(for="max") Max: 
-                    input#max(type="number" name="max" value="7" max="10" min="3") 
+                    input#max(type="number" name="max" value="20" max="20" min="3") 
                 .flex-row.flex-center
                     label(for="min") Min: 
-                    input#min(type="number" name="min" value="4" max="10" min="3") 
+                    input#min(type="number" name="min" value="3" max="20" min="3") 
