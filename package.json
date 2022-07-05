@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "express": "^4.18.1",
-    "mock-argv": "^2.0.8",
     "pug": "^3.0.2"
   },
   "name": "unscrabble",
@@ -32,6 +31,7 @@
   "homepage": "https://github.com/AhamSammich/unscrabble#readme",
   "keywords": [
     "scrabble",
-    "anagram"
+    "anagrams",
+    "dictionary"
   ]
 }
