@@ -14,15 +14,29 @@ const getLoader = () => {
     return loadElem;
 }
 
-const getDefinition = word => {
-    const dictUrl = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
-    const dictKey = 'e1b58875-396f-4962-9666-1dc93ca771f8';
+const getDefinition = (word, secondCheck=false) => {
+    // if (secondCheck) console.log('Second API checked');
+    const dictUrl = secondCheck ? 
+    'https://www.dictionaryapi.com/api/v3/references/sd4/json/' :
+    'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
+
+    const dictKey = secondCheck ?
+    '4d9687f8-d7f5-46cb-aba3-95806f893300' :
+    'e1b58875-396f-4962-9666-1dc93ca771f8';
 
     return new Promise(resolve => {
         fetch(`${dictUrl}${word}?key=${dictKey}`)
         .then(response => response.json())
         .then(data => {
-            let defObj = { word, label: data[0].fl, def: data[0].shortdef };
+            let defObj = { word, label: null, def: null};
+
+            // Check for any available definition
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].shortdef == false) continue;
+                defObj.label = data[i].fl;
+                defObj.def = data[i].shortdef;
+                break;
+            }
             resolve(defObj);
         }).catch(error => {
             console.error(error.message);
@@ -84,8 +98,10 @@ const loadEntry = async elem => {
     elem.append(loader);
 
     let result = await getDefinition(elem.id);
+    // Check a second dictionary API if first yields no definition
+    if (result.label == null) result = await getDefinition(elem.id, true);
+    
     let entryHtml = createHtml(result);
-
     loader.remove();
     showHtml(entryHtml);
     word.setAttribute('data-class', 'defined');

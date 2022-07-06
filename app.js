@@ -47,5 +47,5 @@ app.get('/api/v1/anagrams/:letters([A-Za-z]{3,})', async (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log( `App running on port:${port}.`);
+    console.log( `App running at http://localhost:${port}.`);
 });
