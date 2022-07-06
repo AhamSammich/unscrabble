@@ -12,7 +12,6 @@ app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
     res.render('index');
-    res.end();
 });
 
 app.post('/results', async (req, res) => {
@@ -20,17 +19,32 @@ app.post('/results', async (req, res) => {
         let results = await script.main([...Object.values(req.body)]);
         if (results instanceof Error) {
             res.render('error', { message: results.message, statusCode: results.code })
-            res.end();
         } else {
             req.body['results'] = results;
             res.render('results', req.body);
-            res.end();
         }
     } catch (err) {
         res.render('error', { message: err.message, statusCode: err.code })
-        res.end();
     }
 });
+
+// API route
+app.get('/api/v1/anagrams/:letters([A-Za-z]{3,})', async (req, res) => {
+    try {
+        let letters = req.params.letters;
+        let max = letters.length;
+        let min = 3;
+        let results = await script.handleApiRequest([letters, max, min]);
+        if (results instanceof Error) {
+            res.render('error', { message: results.message, statusCode: results.code })
+        } else {
+            res.json(results);
+        }
+    } catch (err) {
+        res.send(err.message);
+    }
+
+})
 
 app.listen(port, () => {
     console.log( `App running on port:${port}.`);

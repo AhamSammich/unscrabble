@@ -127,6 +127,17 @@ class Solver {
     }
 }
 
+const calcWordValue = word => {
+    let pointValues = {
+        "A": 1, "B": 3, "C": 3, "D": 2, "E": 1, "F": 4, "G": 2,
+        "H": 4, "I": 1, "J": 8, "K": 5, "L": 1, "M": 3, "N": 1,
+        "O": 1, "P": 3, "Q": 10, "R": 1, "S": 1, "T": 1, "U": 1,
+        "V": 4, "W": 4, "X": 8, "Y": 4, "Z": 10
+    }
+
+    return [...word].map(ltr => pointValues[ltr]).reduce((a, b) => a + b, 0)
+}
+
 const main = async (input) => {
     await Dictionary.setList();
     let inp = new InputHandler(input);
@@ -135,16 +146,27 @@ const main = async (input) => {
     let words = new Solver();
     let anagrams = words.getSolution(inp.validated, false);
     return anagrams
-    // try {
-    //     let results = await Promise.all(
-    //         anagrams.map(word => dictionary.define(word))
-    //     );
-    //     results = results.filter(result => result.def?.length > 0);
-    //     return results;
-    // } catch (error) {
-    //     console.error(error);
-    //     return new Error(error.message, 500);
-    // }
 }
 
-module.exports = { InputHandler, Solver, main };
+const handleApiRequest = async (input) => {
+    let data = {};
+    let anagrams = await main(input);
+    let results = {};
+
+    anagrams.forEach(word => {
+        results[word] = calcWordValue(word);
+    });
+    data['letters'] = input[0];
+    data['maxLength'] = Math.max(...Object.keys(results).map(word => word.length));
+    data['maxPoints'] = Math.max(...Object.values(results));
+    data['bestWords'] = Object.keys(results).filter(
+        word => results[word] == data.maxPoints
+    );
+    data['longestWords'] = Object.keys(results).filter(
+        word => word.length == data.maxLength
+    );
+    data['words'] = results;
+    return data;
+}
+
+module.exports = { InputHandler, Solver, main, handleApiRequest };

@@ -2,6 +2,3 @@ npm-debug.log
 node_modules
 .vscode
 tests
-index.html
-/js
-/public/js/unscrabble-browser.js

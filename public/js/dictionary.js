@@ -15,12 +15,12 @@ const createDict = async () => {
     return new Promise((resolve, reject) => {
 
         try {
-            const filePath = path.resolve(__dirname, '..', 'files', 'dictionary.txt');
+            const filePath = path.resolve(__dirname, '..', 'files', 'corncob_caps.txt');
 
             let file = fs.readFileSync(filePath, 'utf8');
             file = file.replace(/\r/g, "");
             file = file?.split('\n');
-            
+            // console.dir(file.map(elem => elem.length).reduce((a, b) => { return Math.max(a, b) }))
             resolve(file);
 
         } catch (err) {
