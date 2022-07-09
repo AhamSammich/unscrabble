@@ -1,4 +1,5 @@
-const script = require('./public/js/unscrabble-web')
+const script = require('./public/js/unscrabble-web');
+const dict = require('./public/js/dictionary');
 const express = require('express');
 const port = process.env.PORT || 8080;
 
@@ -42,9 +43,17 @@ app.get('/api/v1/anagrams/:letters([A-Za-z]{3,})', async (req, res) => {
         }
     } catch (err) {
         res.send(err.message);
-    }
+    } 
+});
 
-})
+app.get('/api/v1/define/:word', async (req, res) => {
+    try {
+        let def = await dict.define(req.params.word);
+        res.json(def);
+    } catch (err) {
+        res.send({ Error : err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log( `App running at http://localhost:${port}.`);

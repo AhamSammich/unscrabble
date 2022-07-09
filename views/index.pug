@@ -1,7 +1,7 @@
 extends layout.pug 
 
 block title 
-    title Unscrabble | Anagram Generator
+    title Unscramble | Anagram Generator
 
 block nav
     a.float-right(href="https://github.com/AhamSammich/unscrabble" target="_blank") 
@@ -12,7 +12,7 @@ block nav
 
 block header
     .tile-set.flex-row(style="padding-top: 10%;")
-        each char in "unscrabble"
+        each char in "unscrambler"
             .tile(
                 style=`background-image: url('./images/tiles/${
                     char.toLowerCase()}.png'); background-size: cover;`
@@ -25,15 +25,15 @@ block main
             .flex-col.flex-center(style="gap: .5rem;")
                 label(for="letters") Letters ( A - Z )
                 input#letters(
-                    type="text" name="letters" maxlength="20" minlength="3" pattern="[A-Za-z]{3,20}"
+                    type="text" name="letters" maxlength="15" minlength="3" pattern="[A-Za-z]{3,15}"
                     placeholder="Enter letters here!" required
                     )
-                button(id="submit-btn" type="submit") Unscrabble it! 
+                button(id="submit-btn" type="submit") Unscramble it! 
             .flex-col.flex-center
-                p Search Length ( 3 - 20 )
+                p Find Word Length ( 3 - 15 )
                 .flex-row.flex-center
                     label(for="max") Max: 
-                    input#max(type="number" name="max" value="20" max="20" min="3") 
+                    input#max(type="number" name="max" value="15" max="15" min="3") 
                 .flex-row.flex-center
                     label(for="min") Min: 
-                    input#min(type="number" name="min" value="3" max="20" min="3") 
+                    input#min(type="number" name="min" value="3" max="15" min="3")

@@ -1,15 +1,16 @@
 const path = require('path');
 const fs = require('fs');
-const https = require('https');
 const http = require('http');
+const https = require('https');
+require('dotenv').config();
 
 // School Dictionary API
 // const apiUrl = 'https://www.dictionaryapi.com/api/v3/references/sd4/json/'
-// const apiKey = '4d9687f8-d7f5-46cb-aba3-95806f893300'
+// const apiKey = process.env.SCHOOL_DICT_API_KEY;
 
 // Collegiate Dictionary API
 const apiUrl = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/'
-const apiKey = 'e1b58875-396f-4962-9666-1dc93ca771f8'
+const apiKey = process.env.COLLEGIATE_DICT_API_KEY;
 
 const createDict = async () => {
     return new Promise((resolve, reject) => {
@@ -49,8 +50,16 @@ const getDefinition = (word) => {
                 });
                 response.on('end', () => {
                     try {
-                        let defArray = JSON.parse(body);
-                        let defObj = { word, label: defArray[0].fl, def: defArray[0].shortdef };
+                        let data = JSON.parse(body);
+                        let defObj = { word, label: null, def: null};
+
+                        // Check for any available definition
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].shortdef == false) continue;
+                            defObj.label = data[i].fl;
+                            defObj.def = data[i].shortdef;
+                            break;
+                        }
                         resolve(defObj);
                     } catch (error) {
                         let err = new Error(`There was an error getting the definition for ${

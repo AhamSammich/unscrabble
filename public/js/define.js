@@ -14,36 +14,15 @@ const getLoader = () => {
     return loadElem;
 }
 
-const getDefinition = (word, secondCheck=false) => {
-    // if (secondCheck) console.log('Second API checked');
-    const dictUrl = secondCheck ? 
-    'https://www.dictionaryapi.com/api/v3/references/sd4/json/' :
-    'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
-
-    const dictKey = secondCheck ?
-    '4d9687f8-d7f5-46cb-aba3-95806f893300' :
-    'e1b58875-396f-4962-9666-1dc93ca771f8';
-
+const fetchDefinition = async (word) => {
     return new Promise(resolve => {
-        fetch(`${dictUrl}${word}?key=${dictKey}`)
-        .then(response => response.json())
-        .then(data => {
-            let defObj = { word, label: null, def: null};
-
-            // Check for any available definition
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].shortdef == false) continue;
-                defObj.label = data[i].fl;
-                defObj.def = data[i].shortdef;
-                break;
-            }
-            resolve(defObj);
+        fetch(`${window.location.origin}/api/v1/define/${word}`)
+        .then(response => resolve(response.json()));
         }).catch(error => {
             console.error(error.message);
             reject(error);
         });
-    });
-}
+    };
 
 const defineAll = async () => {
     const empty = getEmpty();
@@ -97,10 +76,7 @@ const loadEntry = async elem => {
     word.setAttribute('data-class', 'loading');
     elem.append(loader);
 
-    let result = await getDefinition(elem.id);
-    // Check a second dictionary API if first yields no definition
-    if (result.label == null) result = await getDefinition(elem.id, true);
-    
+    let result = await fetchDefinition(elem.id);
     let entryHtml = createHtml(result);
     loader.remove();
     showHtml(entryHtml);
@@ -124,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let loader = getLoader();
         defineBtn.remove();
         main.append(loader);
-        // hideHtml([defineBtn]);
         await defineAll();
         loader.remove();
     });

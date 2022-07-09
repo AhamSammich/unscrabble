@@ -12,10 +12,12 @@
     "devstart": "nodemon app.js"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "node-fetch": "^3.2.6",
     "pug": "^3.0.2"
   },
-  "name": "unscrabble",
+  "name": "word-unscramble",
   "description": "Need some help with your word puzzles?  This app provides anagrams from user-input and retrieves their definitions.",
   "version": "1.0.0",
   "main": "app.js",
@@ -32,6 +34,9 @@
   "keywords": [
     "scrabble",
     "anagrams",
-    "dictionary"
+    "dictionary",
+    "words",
+    "words with friends",
+    "word finder"
   ]
 }

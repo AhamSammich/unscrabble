@@ -127,6 +127,7 @@ class Solver {
     }
 }
 
+// Calculate Scrabble points
 const calcWordValue = word => {
     let pointValues = {
         "A": 1, "B": 3, "C": 3, "D": 2, "E": 1, "F": 4, "G": 2,
@@ -134,7 +135,6 @@ const calcWordValue = word => {
         "O": 1, "P": 3, "Q": 10, "R": 1, "S": 1, "T": 1, "U": 1,
         "V": 4, "W": 4, "X": 8, "Y": 4, "Z": 10
     }
-
     return [...word].map(ltr => pointValues[ltr]).reduce((a, b) => a + b, 0)
 }
 
