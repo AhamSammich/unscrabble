@@ -147,6 +147,10 @@ ul {
     float: right;
 }
 
+.hidden {
+    display: none;
+}
+
 [data-class='label'] {
     font-style: italic;
     font-size: smaller;

@@ -11,8 +11,14 @@ block nav
             style="height: 35px; width: 35px;")
 
 block header
-    .tile-set.flex-row(style="padding-top: 10%;")
-        each char in "unscrambler"
+    .tile-set.flex-row(style="padding-top: 5%;")
+        each char in "word"
+            .tile(
+                style=`background-image: url('./images/tiles/${
+                    char.toLowerCase()}.png'); background-size: cover;`
+            )
+    .tile-set.flex-row
+        each char in "unscramble"
             .tile(
                 style=`background-image: url('./images/tiles/${
                     char.toLowerCase()}.png'); background-size: cover;`
@@ -29,7 +35,7 @@ block main
                     placeholder="Enter letters here!" required
                     )
                 button(id="submit-btn" type="submit") Unscramble it! 
-            .flex-col.flex-center
+            .flex-col.flex-center.hidden
                 p Find Word Length ( 3 - 15 )
                 .flex-row.flex-center
                     label(for="max") Max: 
