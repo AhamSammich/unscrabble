@@ -123,7 +123,7 @@ class Solver {
                 if (validWord) anagrams.push(word);
             }
         });
-        return anagrams;
+        return anagrams.sort((a, b) => b.length - a.length);
     }
 }
 

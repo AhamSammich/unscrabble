@@ -26,13 +26,13 @@ block header
     h2(style="letter-spacing: 2px;") Anagram Generator
 
 block main
-    main.flex-col.flex-center
+    main.flex-col.flex-center.fade-in
         form.flex-row.flex-even(action="/results" method="POST" style="gap: 5rem;")
             .flex-col.flex-center(style="gap: .5rem;")
-                label(for="letters") Letters ( A - Z )
+                //- label(for="letters") Letters ( A - Z )
                 input#letters(
                     type="text" name="letters" maxlength="15" minlength="3" pattern="[A-Za-z]{3,15}"
-                    placeholder="Enter letters here!" required
+                    placeholder="Enter your letters here!" required style="text-align: center;"
                     )
                 button(id="submit-btn" type="submit") Unscramble it! 
             .flex-col.flex-center.hidden

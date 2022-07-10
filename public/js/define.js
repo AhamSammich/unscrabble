@@ -49,10 +49,6 @@ const hideHtml = elements => {
 }
 
 const createHtml = defObj => {
-    let p = document.createElement('p');
-    p.textContent = defObj.label || 'Definition not found.';
-    p.setAttribute('data-class', 'label');
-    
     let ul = document.createElement('ul');
     ul.className = 'flex-col';
     defObj.def?.forEach(def => {
@@ -60,7 +56,13 @@ const createHtml = defObj => {
         li.textContent = def;
         ul.append(li);
     });
-
+    
+    let p = document.createElement('p');
+    p.textContent = ul.children.length ? 
+        (defObj.label || "-") : 
+        'Definition not found.';
+    p.setAttribute('data-class', 'label');
+    
     let elements = [p, ul];
     hideHtml(elements);
 

@@ -38,5 +38,10 @@ block header
 block main
     main(data-array=results.join())
         each word in results 
-            .flex-col.flex-center(id=word style="justify-content: flex-start;")
+            .flex-col.flex-center.fade-in(id=word style="justify-content: flex-start;")
                 h2(data-id=word data-class='word')= word
+
+block footer  
+    .flex-row(style="height: fit-content; position: relative; bottom: 0; padding-top: 2rem; margin: 0 auto;")
+        if results.length > 50
+            a(href="#" style="font-size: larger; margin-top: 1rem;") Back to top
